@@ -1,11 +1,55 @@
+import { useState } from "react";
+
 const Home = () => {
+  const [selectedItems, setSelectedItems] = useState([
+    {
+      id: 1,
+      name: "Nike Air Max",
+      size: "24EU - 9.5US",
+      price: 138.99,
+      quantity: 1,
+      image:
+        "https://images.unsplash.com/flagged/photo-1556637640-2c80d3201be8?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8c25lYWtlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60",
+    },
+    {
+      id: 2,
+      name: "Nike Air Max Pro - Super Light",
+      size: "42EU - 8.5US",
+      price: 238.99,
+      quantity: 1,
+      image:
+        "https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8OHx8c25lYWtlcnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60",
+    },
+  ]);
+
+  const handleQuantityChange = (id, change) => {
+    setSelectedItems((prevItems) =>
+      prevItems.map((item) =>
+        item.id === id
+          ? {
+              ...item,
+              quantity: item.quantity + change,
+            }
+          : item,
+      ),
+    );
+  };
+
+  const totalPrice = selectedItems.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0,
+  );
+  const [shippingCost, setShippingCost] = useState(12);
+  const handleShippingChange = (cost) => {
+    setShippingCost(cost);
+  };
+  const totalPay = totalPrice + shippingCost;
+
   const handleCreatePayment = () => {
     console.log("Create Payment");
   };
   return (
     <div>
-      
-
       {/* Order Section  */}
       <div className="grid sm:px-10 lg:grid-cols-2 lg:px-20 xl:px-32">
         {/* Product And Shipping Section */}
@@ -16,40 +60,44 @@ const Home = () => {
           </p>
 
           {/* Products */}
-
           <div className="mt-8 space-y-3 rounded-lg border bg-white px-2 py-4 sm:px-6">
-            <div className="flex flex-col rounded-lg bg-white sm:flex-row">
-              <img
-                className="m-2 h-24 w-28 rounded-md border object-cover object-center"
-                src="https://images.unsplash.com/flagged/photo-1556637640-2c80d3201be8?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8c25lYWtlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60"
-                alt=""
-              />
-              <div className="flex w-full flex-col px-4 py-4">
-                <span className="font-semibold">
-                  Nike Air Max Pro 8888 - Super Light
-                </span>
-                <span className="float-right text-gray-400">42EU - 8.5US</span>
-                <p className="text-lg font-bold">$138.99</p>
+            {selectedItems.map((item) => (
+              <div
+                key={item.id}
+                className="flex flex-col rounded-lg bg-white sm:flex-row"
+              >
+                <img
+                  className="m-2 h-24 w-28 rounded-md border object-cover object-center"
+                  src={item.image}
+                  alt={item.name}
+                />
+                <div className="flex w-full flex-col px-4 py-4">
+                  <span className="font-semibold">{item.name}</span>
+                  <span className="float-right text-gray-400">{item.size}</span>
+                  <p className="text-lg font-bold">${item.price}</p>
+                </div>{" "}
+                <div className="mt-2 flex items-center">
+                  <button
+                    onClick={() =>
+                      item.quantity > 0 && handleQuantityChange(item.id, -1)
+                    }
+                    className="rounded-lg border border-gray-300 px-2 py-1"
+                  >
+                    -
+                  </button>
+                  <span className="mx-4">{item.quantity}</span>
+                  <button
+                    onClick={() => handleQuantityChange(item.id, 1)}
+                    className="rounded-lg border border-gray-300 px-2 py-1"
+                  >
+                    +
+                  </button>
+                </div>
               </div>
-            </div>
-            <div className="flex flex-col rounded-lg bg-white sm:flex-row">
-              <img
-                className="m-2 h-24 w-28 rounded-md border object-cover object-center"
-                src="https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8OHx8c25lYWtlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60"
-                alt=""
-              />
-              <div className="flex w-full flex-col px-4 py-4">
-                <span className="font-semibold">
-                  Nike Air Max Pro 8888 - Super Light
-                </span>
-                <span className="float-right text-gray-400">42EU - 8.5US</span>
-                <p className="mt-auto text-lg font-bold">$238.99</p>
-              </div>
-            </div>
+            ))}
           </div>
 
           {/* Shipping Method */}
-
           <p className="mt-8 text-lg font-medium">Shipping Methods</p>
           <form className="mt-5 grid gap-6">
             <div className="relative">
@@ -59,6 +107,7 @@ const Home = () => {
                 type="radio"
                 name="radio"
                 defaultChecked
+                onChange={() => handleShippingChange(12)}
               />
               <span className="absolute right-4 top-1/2 box-content block h-3 w-3 -translate-y-1/2 rounded-full border-8 border-gray-300 bg-white peer-checked:border-gray-700"></span>
               <label
@@ -67,7 +116,7 @@ const Home = () => {
               >
                 <img
                   className="w-14 object-contain"
-                  src="/images/naorrAeygcJzX0SyNI4Y0.png"
+                  src="/src/assets/fedEx.png"
                   alt=""
                 />
                 <div className="ml-5">
@@ -84,7 +133,7 @@ const Home = () => {
                 id="radio_2"
                 type="radio"
                 name="radio"
-                defaultChecked
+                onChange={() => handleShippingChange(8)}
               />
               <span className="absolute right-4 top-1/2 box-content block h-3 w-3 -translate-y-1/2 rounded-full border-8 border-gray-300 bg-white peer-checked:border-gray-700"></span>
               <label
@@ -93,13 +142,13 @@ const Home = () => {
               >
                 <img
                   className="w-14 object-contain"
-                  src="/images/oG8xsl3xsOkwkMsrLGKM4.png"
+                  src="/src/assets/dhl.png"
                   alt=""
                 />
                 <div className="ml-5">
-                  <span className="mt-2 font-semibold">Fedex Delivery</span>
+                  <span className="mt-2 font-semibold">DHL Delivery</span>
                   <p className="text-sm leading-6 text-slate-500">
-                    Delivery: 2-4 Days
+                    Delivery: 3-7 Days
                   </p>
                 </div>
               </label>
@@ -259,16 +308,20 @@ const Home = () => {
             <div className="mt-6 border-b border-t py-2">
               <div className="flex items-center justify-between">
                 <p className="text-sm font-medium text-gray-900">Subtotal</p>
-                <p className="font-semibold text-gray-900">$399.00</p>
+                <p className="font-semibold text-gray-900">
+                  ${totalPrice.toFixed(2)}
+                </p>
               </div>
               <div className="flex items-center justify-between">
                 <p className="text-sm font-medium text-gray-900">Shipping</p>
-                <p className="font-semibold text-gray-900">$8.00</p>
+                <p className="font-semibold text-gray-900">${shippingCost}</p>
               </div>
             </div>
             <div className="mt-6 flex items-center justify-between">
               <p className="text-sm font-medium text-gray-900">Total</p>
-              <p className="text-2xl font-semibold text-gray-900">$408.00</p>
+              <p className="text-2xl font-semibold text-gray-900">
+                ${totalPay}
+              </p>
             </div>
           </div>
           <button
