@@ -49,10 +49,14 @@ const Home = () => {
 
   const handleCreatePayment = () => {
     console.log("Create Payment");
-    axios.post("http://localhost:5000/create-payment", {
-      amount: totalPay,
-      currency: "BDT",
-    });
+    axios
+      .post("http://localhost:5000/create-payment", {
+        amount: totalPay,
+        currency: "BDT",
+      })
+      .then((response) => {
+        console.log(response);
+      });
   };
   return (
     <div>
