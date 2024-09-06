@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useState } from "react";
 
 const Home = () => {
@@ -43,10 +44,15 @@ const Home = () => {
   const handleShippingChange = (cost) => {
     setShippingCost(cost);
   };
+
   const totalPay = totalPrice + shippingCost;
 
   const handleCreatePayment = () => {
     console.log("Create Payment");
+    axios.post("http://localhost:5000/create-payment", {
+      amount: totalPay,
+      currency: "BDT",
+    });
   };
   return (
     <div>
@@ -64,7 +70,7 @@ const Home = () => {
             {selectedItems.map((item) => (
               <div
                 key={item.id}
-                className="flex flex-col rounded-lg bg-white sm:flex-row"
+                className={`flex flex-col rounded-lg pr-2 sm:flex-row ${item.quantity === 0 ? "bg-gray-200" : "bg-white"}`}
               >
                 <img
                   className="m-2 h-24 w-28 rounded-md border object-cover object-center"
@@ -314,19 +320,21 @@ const Home = () => {
               </div>
               <div className="flex items-center justify-between">
                 <p className="text-sm font-medium text-gray-900">Shipping</p>
-                <p className="font-semibold text-gray-900">${shippingCost}</p>
+                <p className="font-semibold text-gray-900">
+                  ${totalPrice === 0 ? "0" : shippingCost}
+                </p>
               </div>
             </div>
             <div className="mt-6 flex items-center justify-between">
               <p className="text-sm font-medium text-gray-900">Total</p>
               <p className="text-2xl font-semibold text-gray-900">
-                ${totalPay}
+                ${totalPrice === 0 ? "0" : totalPay}
               </p>
             </div>
           </div>
           <button
             onClick={handleCreatePayment}
-            className="mb-8 mt-4 w-full rounded-md bg-gray-900 px-6 py-3 font-medium text-white"
+            className={`mb-8 mt-4 w-full rounded-md px-6 py-3 font-medium text-white ${totalPrice === 0 ? "cursor-not-allowed bg-gray-400" : "bg-gray-900"}`}
           >
             Place Order
           </button>
