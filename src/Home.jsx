@@ -56,6 +56,12 @@ const Home = () => {
       })
       .then((response) => {
         console.log(response);
+
+        const redirectUrl = response.data.paymentUrl;
+
+        if (redirectUrl) {
+          window.location.replace(redirectUrl);
+        }
       });
   };
   return (
