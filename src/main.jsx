@@ -5,6 +5,7 @@ import Home from "./Home.jsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Root from "./Root.jsx";
 import ErrorPage from "./ErrorPage.jsx";
+import Success from "./Success.jsx";
 
 const router = createBrowserRouter([
   {
@@ -16,6 +17,10 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <Home></Home>,
+      },
+      {
+        path: "/success",
+        element: <Success></Success>,
       },
     ],
   },
