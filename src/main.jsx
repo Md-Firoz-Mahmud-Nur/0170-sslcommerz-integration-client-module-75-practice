@@ -6,6 +6,8 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Root from "./Root.jsx";
 import ErrorPage from "./ErrorPage.jsx";
 import Success from "./Success.jsx";
+import Fail from "./Fail.jsx";
+import Cancel from "./Cancel.jsx";
 
 const router = createBrowserRouter([
   {
@@ -21,6 +23,14 @@ const router = createBrowserRouter([
       {
         path: "/success",
         element: <Success></Success>,
+      },
+      {
+        path: "/fail",
+        element: <Fail></Fail>,
+      },
+      {
+        path: "/Cancel",
+        element: <Cancel></Cancel>,
       },
     ],
   },
