@@ -22,6 +22,7 @@ const Home = () => {
         "https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8OHx8c25lYWtlcnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60",
     },
   ]);
+  const [loading, setLoading] = useState(false);
 
   const handleQuantityChange = (id, change) => {
     setSelectedItems((prevItems) =>
@@ -48,22 +49,30 @@ const Home = () => {
   const totalPay = totalPrice + shippingCost;
 
   const handleCreatePayment = () => {
+    setLoading(true);
+    const emailInput = document.getElementById("email").value;
+    if (!emailInput) {
+      setLoading(false);
+      alert("Email is required");
+      return;
+    }
     console.log("Create Payment");
     axios
       .post("http://localhost:5000/create-payment", {
         amount: totalPay,
         currency: "BDT",
+        email: document.getElementById("email").value,
       })
       .then((response) => {
         console.log(response);
-
         const redirectUrl = response.data.paymentUrl;
-
         if (redirectUrl) {
           window.location.replace(redirectUrl);
         }
       });
+    setLoading(false);
   };
+
   return (
     <div>
       {/* Order Section  */}
@@ -192,6 +201,7 @@ const Home = () => {
                 name="email"
                 className="w-full rounded-md border border-gray-200 px-4 py-3 pl-11 text-sm shadow-sm outline-none focus:z-10 focus:border-blue-500 focus:ring-blue-500"
                 placeholder="your.email@gmail.com"
+                required
               />
               <div className="pointer-events-none absolute inset-y-0 left-0 inline-flex items-center px-3">
                 <svg
@@ -344,9 +354,16 @@ const Home = () => {
           </div>
           <button
             onClick={handleCreatePayment}
-            className={`mb-8 mt-4 w-full rounded-md px-6 py-3 font-medium text-white ${totalPrice === 0 ? "cursor-not-allowed bg-gray-400" : "bg-gray-900"}`}
+            disabled={loading}
+            className={`mb-8 mt-4 w-full rounded-md px-6 py-3 font-medium text-white ${
+              loading
+                ? "cursor-not-allowed bg-gray-400"
+                : totalPrice === 0
+                  ? "cursor-not-allowed bg-gray-400"
+                  : "bg-gray-900"
+            }`}
           >
-            Place Order
+            {loading ? "Processing..." : "Place Order"}
           </button>
         </div>
       </div>
